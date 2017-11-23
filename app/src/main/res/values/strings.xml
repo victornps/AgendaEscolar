@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Agenda Escolar</string>
+    <string name="bt_cadastrar">Cadastrar</string>
+
+    <string name="seu_nome_aqui">Seu nome aqui</string>
+    <string name="nome">Nome</string>
+
+</resources>
