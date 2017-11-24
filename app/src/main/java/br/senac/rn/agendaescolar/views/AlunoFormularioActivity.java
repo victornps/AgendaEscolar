@@ -16,7 +16,8 @@ public class AlunoFormularioActivity extends AppCompatActivity {
 
     private EditText etNome, etEndereco, etFone, etSite;
     private RatingBar rbNota;
-    private Button btCadastrar,btEditar;
+    private Button btCadastrar;
+    private Aluno aluno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,38 +35,14 @@ public class AlunoFormularioActivity extends AppCompatActivity {
         rbNota = (RatingBar) findViewById(R.id.formulario_nota);
         btCadastrar = (Button) findViewById(R.id.formulario_cadastrar);
 
-
-
-
-
         Intent intent = getIntent();
-        Aluno aluno = (Aluno) intent.getSerializableExtra("aluno");
+        aluno = (Aluno) intent.getSerializableExtra("aluno");
         if(aluno != null){
-            teste(aluno);
-            //preencherCampos(aluno);
-
+            preencherCampos(aluno);
+        }else{
+            aluno = new Aluno();
         }
 
-    }
-
-    private void teste(final Aluno aluno){
-        setContentView(R.layout.activity_aluno_editar);
-        etNome = (EditText) findViewById(R.id.formulario_nome);
-        etEndereco = (EditText) findViewById(R.id.formulario_endereco);
-        etFone = (EditText) findViewById(R.id.formulario_fone);
-        etSite = (EditText) findViewById(R.id.formulario_site);
-        rbNota = (RatingBar) findViewById(R.id.formulario_nota);
-        btEditar = (Button) findViewById(R.id.formulario_editar);
-
-        preencherCampos(aluno);
-
-        btEditar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                editar(aluno);
-            }
-        });
     }
 
     private void definirEventos(){
@@ -75,44 +52,30 @@ public class AlunoFormularioActivity extends AppCompatActivity {
                 cadastrar();
             }
         });
-        /*btEditar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                editar();
-            }
-        });*/
     }
 
     private void cadastrar(){
-        Toast.makeText(this,"Aluno Cadastrado", Toast.LENGTH_LONG).show();
-
         AlunoDao dao = new AlunoDao(this);
-        Aluno aluno = new Aluno();
+
         aluno.setNome(etNome.getText().toString());
         aluno.setEndereco(etEndereco.getText().toString());
         aluno.setFone(etFone.getText().toString());
         aluno.setSite(etSite.getText().toString());
         aluno.setNota(Double.valueOf(rbNota.getProgress()));
-        dao.inserir(aluno);
+
+        if(aluno.getId() == null){
+            dao.inserir(aluno);
+            Toast.makeText(this,"Aluno Cadastrado", Toast.LENGTH_LONG).show();
+        }else {
+            dao.editar(aluno);
+            Toast.makeText(this,"Aluno Editado", Toast.LENGTH_LONG).show();
+        }
         finish();
 
 
         //Intent intentChamaLista = new Intent(this, AlunoListaActivity.class);
         //startActivity(intentChamaLista);
-    }
-
-    private void editar(Aluno aluno){
-        AlunoDao dao = new AlunoDao(this);
-        //Aluno aluno = new Aluno();
-        //aluno.setId(aluno.getId());
-        aluno.setNome(etNome.getText().toString());
-        aluno.setEndereco(etEndereco.getText().toString());
-        aluno.setFone(etFone.getText().toString());
-        aluno.setSite(etSite.getText().toString());
-        aluno.setNota(Double.valueOf(rbNota.getProgress()));
-        dao.editar(aluno);
-        finish();
     }
 
     private void limparCampos(){
