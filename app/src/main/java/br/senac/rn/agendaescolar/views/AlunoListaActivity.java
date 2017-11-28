@@ -28,6 +28,7 @@ import java.util.List;
 import br.senac.rn.agendaescolar.adapter.AlunoAdapter;
 import br.senac.rn.agendaescolar.daos.AlunoDao;
 import br.senac.rn.agendaescolar.models.Aluno;
+import br.senac.rn.agendaescolar.services.AlunoService;
 
 public class AlunoListaActivity extends AppCompatActivity {
 
@@ -58,7 +59,8 @@ public class AlunoListaActivity extends AppCompatActivity {
     }
 
     private void carregarLista() {
-        List<Aluno> alunos = new AlunoDao(this).buscarTodos();
+        //List<Aluno> alunos = new AlunoDao(this).buscarTodos();
+        List<Aluno> alunos = new AlunoService().buscarTodos();
         AlunoAdapter adapter = new AlunoAdapter(this, alunos);
         lvAlunos.setAdapter(adapter);
     }
