@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nome" />
 
@@ -14,10 +14,12 @@
         android:id="@+id/formulario_nome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Seu nome aqui" />
+        android:ems="10"
+        android:hint="Seu nome aqui"
+        android:inputType="textPersonName" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Endereço" />
 
@@ -25,10 +27,12 @@
         android:id="@+id/formulario_endereco"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Seu endereço aqui" />
+        android:ems="10"
+        android:hint="Seu endereço aqui"
+        android:inputType="textPersonName" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Fone" />
 
@@ -36,10 +40,12 @@
         android:id="@+id/formulario_fone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Seu fone aqui" />
+        android:ems="10"
+        android:hint="Seu fone aqui"
+        android:inputType="phone" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Site" />
 
@@ -47,10 +53,12 @@
         android:id="@+id/formulario_site"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Seu site aqui" />
+        android:ems="10"
+        android:hint="Seu site aqui"
+        android:inputType="textPostalAddress" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nota" />
 
@@ -59,15 +67,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:max="10"
-        android:numStars="5" />
+        android:numStars="5"
+        android:max="10" />
 
     <Button
         android:id="@+id/formulario_cadastrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cadastrar" />
-
-
 
 </LinearLayout>

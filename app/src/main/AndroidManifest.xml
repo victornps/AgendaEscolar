@@ -3,6 +3,7 @@
     package="br.senac.rn.agendaescolar.views">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -17,9 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AlunoFormularioActivity">
-
-        </activity>
+        <activity android:name=".AlunoFormularioActivity"></activity>
     </application>
 
 </manifest>

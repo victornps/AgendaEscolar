@@ -1,14 +1,12 @@
 package br.senac.rn.agendaescolar.views;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
-import android.widget.Toast;
-
 import br.senac.rn.agendaescolar.daos.AlunoDao;
 import br.senac.rn.agendaescolar.models.Aluno;
 
@@ -27,7 +25,16 @@ public class AlunoFormularioActivity extends AppCompatActivity {
         definirEventos();
     }
 
-    private void inicializarComponentes(){
+    private void definirEventos() {
+        btCadastrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cadastrar();
+            }
+        });
+    }
+
+    private void inicializarComponentes() {
         etNome = (EditText) findViewById(R.id.formulario_nome);
         etEndereco = (EditText) findViewById(R.id.formulario_endereco);
         etFone = (EditText) findViewById(R.id.formulario_fone);
@@ -37,25 +44,15 @@ public class AlunoFormularioActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         aluno = (Aluno) intent.getSerializableExtra("aluno");
-        if(aluno != null){
+        if (aluno != null) {
             preencherCampos(aluno);
-        }else{
+        } else {
             aluno = new Aluno();
         }
 
     }
 
-    private void definirEventos(){
-        btCadastrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cadastrar();
-            }
-        });
-
-    }
-
-    private void cadastrar(){
+    private void cadastrar() {
         AlunoDao dao = new AlunoDao(this);
 
         aluno.setNome(etNome.getText().toString());
@@ -64,21 +61,15 @@ public class AlunoFormularioActivity extends AppCompatActivity {
         aluno.setSite(etSite.getText().toString());
         aluno.setNota(Double.valueOf(rbNota.getProgress()));
 
-        if(aluno.getId() == null){
+        if (aluno.getId() == null) {
             dao.inserir(aluno);
-            Toast.makeText(this,"Aluno Cadastrado", Toast.LENGTH_LONG).show();
-        }else {
+        } else {
             dao.editar(aluno);
-            Toast.makeText(this,"Aluno Editado", Toast.LENGTH_LONG).show();
         }
         finish();
-
-
-        //Intent intentChamaLista = new Intent(this, AlunoListaActivity.class);
-        //startActivity(intentChamaLista);
     }
 
-    private void limparCampos(){
+    private void limparCampos() {
         etNome.setText("");
         etEndereco.setText("");
         etFone.setText("");
@@ -86,12 +77,11 @@ public class AlunoFormularioActivity extends AppCompatActivity {
         rbNota.setProgress(0);
     }
 
-    private void preencherCampos(Aluno aluno){
+    private void preencherCampos(Aluno aluno) {
         etNome.setText(aluno.getNome());
         etEndereco.setText(aluno.getEndereco());
         etFone.setText(aluno.getFone());
         etSite.setText(aluno.getSite());
         rbNota.setProgress(aluno.getNota().intValue());
     }
-
 }

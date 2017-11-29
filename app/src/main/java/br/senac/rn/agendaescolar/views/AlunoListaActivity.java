@@ -1,13 +1,16 @@
 package br.senac.rn.agendaescolar.views;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,8 +22,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +35,12 @@ public class AlunoListaActivity extends AppCompatActivity {
 
     private ListView lvAlunos;
     private Button btCadastrar;
-
+    private List<Aluno> alunos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aluno_lista);
-
     }
 
     @Override
@@ -50,48 +50,44 @@ public class AlunoListaActivity extends AppCompatActivity {
         definirEventos();
     }
 
-    private void inicializarComponentes(){
+    private void inicializarComponentes() {
         lvAlunos = (ListView) findViewById(R.id.lista_alunos);
         btCadastrar = (Button) findViewById(R.id.cadastrar);
-
-        carregarLista();
+        //carregaLista();
+        new ExecutaServico().execute();
         registerForContextMenu(lvAlunos);
     }
 
-    private void carregarLista() {
-        //List<Aluno> alunos = new AlunoDao(this).buscarTodos();
-        List<Aluno> alunos = new AlunoService().buscarTodos();
+    private void carregaLista() {
+//        List<Aluno> alunos = new AlunoDao(this).buscarTodos();
+        alunos = new AlunoService().buscarTodos();
         AlunoAdapter adapter = new AlunoAdapter(this, alunos);
         lvAlunos.setAdapter(adapter);
     }
 
-    private void definirEventos(){
+    private void definirEventos() {
         btCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentChamaFormulario = new Intent(AlunoListaActivity.this,AlunoFormularioActivity.class);
+                Intent intentChamaFormulario = new Intent(AlunoListaActivity.this, AlunoFormularioActivity.class);
                 startActivity(intentChamaFormulario);
-
             }
         });
-
         lvAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> lista, View item, int posicao, long id) {
                 Aluno aluno = (Aluno) lvAlunos.getItemAtPosition(posicao);
-                Intent intentChamaFormulario = new Intent(AlunoListaActivity.this,AlunoFormularioActivity.class);
-                intentChamaFormulario.putExtra("aluno",aluno);
+                Intent intentChamaFormulario = new Intent(AlunoListaActivity.this, AlunoFormularioActivity.class);
+                intentChamaFormulario.putExtra("aluno", aluno);
                 startActivity(intentChamaFormulario);
             }
         });
-
-
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_lista_opcoes,menu);
+        inflater.inflate(R.menu.menu_lista_opcoes, menu);
     }
 
     @Override
@@ -99,48 +95,61 @@ public class AlunoListaActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo alunoEscolhido;
         alunoEscolhido = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Aluno aluno = (Aluno) lvAlunos.getItemAtPosition(alunoEscolhido.position);
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.item_sms:
                 Intent intentSms = new Intent(Intent.ACTION_VIEW);
-                intentSms.setData(Uri.parse("sms:8411112222"));
+                intentSms.setData(Uri.parse("sms:" + aluno.getFone()));
                 item.setIntent(intentSms);
                 break;
-
             case R.id.item_site:
                 Intent intentSite = new Intent(Intent.ACTION_VIEW);
                 intentSite.setData(Uri.parse(aluno.getSite()));
                 item.setIntent(intentSite);
                 break;
-
             case R.id.item_mapa:
                 Intent intentMapa = new Intent(Intent.ACTION_VIEW);
                 intentMapa.setData(Uri.parse("geo:0,0?q=" + aluno.getEndereco()));
                 item.setIntent(intentMapa);
                 break;
-
             case R.id.item_ligar:
-                if (ActivityCompat.checkSelfPermission(
-                        this, Manifest.permission.CALL_PHONE)
-                         !=
-                        PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(
-                            this,
-                            new String[]{Manifest.permission.CALL_PHONE},
-                    9);
-                }else{
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 9);
+                } else {
                     Intent intentLigar = new Intent(Intent.ACTION_CALL);
                     intentLigar.setData(Uri.parse("tel:" + aluno.getFone()));
                     item.setIntent(intentLigar);
-
                 }
                 break;
             case R.id.item_deletar:
                 AlunoDao dao = new AlunoDao(this);
                 dao.remover(aluno);
-                carregarLista();
+                carregaLista();
                 break;
-
         }
         return super.onContextItemSelected(item);
     }
+
+    private class ExecutaServico extends AsyncTask {
+
+        private ProgressDialog dialogo;
+
+        @Override
+        protected void onPreExecute() {
+            dialogo = ProgressDialog.show(AlunoListaActivity.this, "Aguarde", "Carregando dados...");
+        }
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            alunos = new AlunoService().buscarTodos();
+            AlunoAdapter adapter = new AlunoAdapter(AlunoListaActivity.this, alunos);
+            lvAlunos.setAdapter(adapter);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            dialogo.dismiss();
+        }
+    }
+
 }

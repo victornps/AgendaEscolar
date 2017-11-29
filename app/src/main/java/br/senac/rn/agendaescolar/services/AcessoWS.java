@@ -9,7 +9,8 @@ import java.net.URL;
 
 public class AcessoWS {
 
-    public String httpGet(String endereco){
+    public String httpGet(String endereco) {
+        StringBuilder builder = new StringBuilder();
         try {
             URL url = new URL(endereco);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -18,18 +19,19 @@ public class AcessoWS {
 
             InputStreamReader streamReader = new InputStreamReader(url.openStream());
             BufferedReader bufferedReader = new BufferedReader(streamReader);
-            StringBuilder builder = new StringBuilder();
+
             String linha = null;
-            while ((linha = bufferedReader.readLine()) != null){
+            while ((linha = bufferedReader.readLine()) != null) {
                 builder.append(linha + "\n");
             }
             bufferedReader.close();
-            return builder.toString();
-        }catch (MalformedURLException e){
+
+        } catch (MalformedURLException e) {
             e.printStackTrace();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return builder.toString();
     }
+
 }
