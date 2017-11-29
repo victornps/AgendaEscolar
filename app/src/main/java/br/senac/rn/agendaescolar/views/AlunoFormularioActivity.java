@@ -66,7 +66,8 @@ public class AlunoFormularioActivity extends AppCompatActivity {
         } else {
             dao.editar(aluno);
         }
-        finish();
+
+            finish();
     }
 
     private void limparCampos() {
